@@ -2,7 +2,15 @@ FROM ubuntu:trusty
 MAINTAINER Jack Twilley <twilleyj@lifetime.oregonstate.edu>
 RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sources.list
-RUN apt-get update && apt-get install -y build-essential texlive-full biber r-base
+RUN apt-get update && apt-get install -y \
+  biber \
+  build-essential \
+  latexmk \
+  r-base \
+  texlive-latex-extra \
+  texlive-latex-recommended \
+  texlive-science \
+  texlive-xetex 
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # https://gist.github.com/stevenworthington/3178163
