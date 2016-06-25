@@ -1,18 +1,21 @@
-FROM ubuntu:trusty
+FROM ubuntu:xenial
 MAINTAINER Jack Twilley <twilleyj@lifetime.oregonstate.edu>
-RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
-RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu trusty/' >> /etc/apt/sources.list
-RUN apt-get update && apt-get install -y \
-  biber \
+RUN echo 'deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe' >> /etc/apt/sources.list
+RUN echo 'Package: biber\n\
+Pin: release a=xenial-proposed\n\
+Pin-Priority: 400\n' > /etc/apt/preferences.d/proposed-updates
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
+RUN apt update && apt install -y \
+  biber/xenial-proposed \
   build-essential \
   latexmk \
   r-base \
   texlive-latex-extra \
   texlive-latex-recommended \
   texlive-science \
-  texlive-xetex 
-RUN apt-get clean
-RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  texlive-xetex && \
+  apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 # https://gist.github.com/stevenworthington/3178163
 # In R code:
 # packages <- c("ggplot2", "plyr", "reshape2", "RColorBrewer", "scales", "grid")
