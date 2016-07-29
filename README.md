@@ -1,3 +1,5 @@
+[![](https://images.microbadger.com/badges/version/mathuin/thesis.svg)](http://microbadger.com/#/images/mathuin/thesis "Get your own version badge on microbadger.com")
+
 This repository contains the Docker configuration to build my master's thesis.
 
 It's essentially an Ubuntu image with TeXLive, biber, and R.
