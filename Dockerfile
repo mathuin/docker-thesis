@@ -1,13 +1,9 @@
 FROM ubuntu:xenial
 MAINTAINER Jack Twilley <twilleyj@lifetime.oregonstate.edu>
-RUN echo 'deb http://archive.ubuntu.com/ubuntu/ xenial-proposed restricted main multiverse universe' >> /etc/apt/sources.list
-RUN echo 'Package: biber\n\
-Pin: release a=xenial-proposed\n\
-Pin-Priority: 400\n' > /etc/apt/preferences.d/proposed-updates
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
 RUN apt update && apt install -y \
-  biber/xenial-proposed \
+  biber \
   build-essential \
   latexmk \
   r-base \
@@ -29,14 +25,23 @@ ipak <- function(pkg){\n\
     if (length(new.pkg) > 0)\n\
         install.packages(new.pkg, dependencies = TRUE)\n\
     sapply(pkg, require, character.only = TRUE)\n\
-}' > ~/.Rprofile
+}' > /root/.Rprofile
 RUN echo '#!/bin/bash\n\
+source /root/.bashrc\n\
 if [ "$#" -ne 1 ]; then\n\
-    exec "$@"\n\
+    "$@"\n\
 else\n\
-    exec make realclean thesis.pdf\n\
+    make realclean thesis.pdf\n\
 fi' > /root/docker-entrypoint.sh
 RUN chmod +x /root/docker-entrypoint.sh
+RUN echo '#!/bin/bash\n\
+ls -ald /data\n\
+chown --reference=/data -R /data\n\
+' > /root/cleanup.sh
+RUN chmod +x /root/cleanup.sh
+RUN echo 'trap /root/cleanup.sh EXIT\n\
+' > /root/.bashrc
+RUN chmod +x /root/.bashrc
 VOLUME ["/data"]
 WORKDIR "/data"
 ENTRYPOINT ["/root/docker-entrypoint.sh"]
