@@ -1,5 +1,4 @@
 FROM ubuntu:xenial
-MAINTAINER Jack Twilley <twilleyj@lifetime.oregonstate.edu>
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
 RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
