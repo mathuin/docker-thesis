@@ -1,39 +1,20 @@
-FROM ubuntu:xenial
+FROM r-base:3.4.0
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key E084DAB9
-RUN echo 'deb http://cran.rstudio.com/bin/linux/ubuntu xenial/' >> /etc/apt/sources.list
-RUN apt update && apt install -y \
-  biber \
-  build-essential \
-  latexmk \
-  r-base \
-  texlive-latex-extra \
-  texlive-latex-recommended \
-  texlive-science \
-  texlive-xetex && \
-  apt clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Base packages
+RUN apt-get update -q && apt-get install -qy \
+  curl \
+  gnupg \
+  make \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-# https://gist.github.com/stevenworthington/3178163
-# In R code:
-# packages <- c("ggplot2", "plyr", "reshape2", "RColorBrewer", "scales", "grid")
-# ipak(packages)
-RUN echo 'r = getOption("repos")\n\
-r["CRAN"] = "https://cran.bnr.berkeley.edu"\n\
-options(repos=r)\n\
-rm(r)\n\
-ipak <- function(pkg){\n\
-    new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]\n\
-    if (length(new.pkg) > 0)\n\
-        install.packages(new.pkg, dependencies = TRUE)\n\
-    sapply(pkg, require, character.only = TRUE)\n\
-}' > /root/.Rprofile
-
+# Config files
 RUN echo '#!/bin/bash\n\
 source /root/.bashrc\n\
 if [ "$#" -ne 1 ]; then\n\
     "$@"\n\
 else\n\
-    make realclean thesis.pdf\n\
+    make clean thesis.pdf\n\
 fi' > /root/docker-entrypoint.sh
 RUN chmod +x /root/docker-entrypoint.sh
 
@@ -45,6 +26,45 @@ RUN chmod +x /root/cleanup.sh
 RUN echo 'trap /root/cleanup.sh EXIT\n\
 ' > /root/.bashrc
 RUN chmod +x /root/.bashrc
+
+ENV R_LIBS="/root/R_libs"
+RUN mkdir -p $R_LIBS
+
+# R packages
+RUN Rscript -e 'install.packages(c("dplyr", "ggplot2", "knitr", "readr", "stargazer", "tidyr"), repos="http://cran.rstudio.com/", clean=TRUE)'
+
+# TeX Live
+COPY ./small.profile /tmp/
+RUN mkdir -p /tmp/texlive \
+  && curl -SL http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
+  | tar -xzC /tmp/texlive \
+  && /tmp/texlive/install-tl-*/install-tl -profile /tmp/small.profile \
+  && rm -rf /tmp/texlive
+ENV PATH=/usr/local/texlive/2016/bin/x86_64-linux:$PATH \
+    INFOPATH=/usr/local/texlive/2016/texmf-dist/doc/info:$INFOPATH \
+    MANPATH=/usr/local/texlive/2016/texmf-dist/doc/man:$MANPATH
+
+# Additional LaTeX packages
+RUN tlmgr update -- all && tlmgr install \
+  adjustbox \
+  biber \
+  biblatex \
+  biblatex-apa \
+  biocon \
+  collectbox \
+  csquotes \
+  currfile \
+  framed \
+  gincltex \
+  latexmk \
+  logreq \
+  marginnote \
+  outlines \
+  preview \
+  standalone \
+  svn-prov \
+  todonotes \
+  xstring
 
 VOLUME ["/data"]
 WORKDIR "/data"
