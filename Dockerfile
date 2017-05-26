@@ -60,8 +60,10 @@ RUN tlmgr update -- all && tlmgr install \
   logreq \
   marginnote \
   outlines \
+  preprint \
   preview \
   standalone \
+  siunitx \
   svn-prov \
   todonotes \
   xstring
