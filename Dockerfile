@@ -31,7 +31,7 @@ ENV R_LIBS="/root/R_libs"
 RUN mkdir -p $R_LIBS
 
 # R packages
-RUN Rscript -e 'install.packages(c("dplyr", "ggplot2", "knitr", "readr", "stargazer", "tidyr"), repos="http://cran.rstudio.com/", clean=TRUE)'
+RUN Rscript -e 'install.packages(c("dplyr", "ggplot2", "knitr", "readr", "stargazer", "tidyr", "xtable", "texreg", "broom"), repos="http://cran.rstudio.com/", clean=TRUE)'
 
 # TeX Live
 COPY ./small.profile /tmp/
@@ -40,9 +40,9 @@ RUN mkdir -p /tmp/texlive \
   | tar -xzC /tmp/texlive \
   && /tmp/texlive/install-tl-*/install-tl -profile /tmp/small.profile \
   && rm -rf /tmp/texlive
-ENV PATH=/usr/local/texlive/2016/bin/x86_64-linux:$PATH \
-    INFOPATH=/usr/local/texlive/2016/texmf-dist/doc/info:$INFOPATH \
-    MANPATH=/usr/local/texlive/2016/texmf-dist/doc/man:$MANPATH
+ENV PATH=/usr/local/texlive/2017/bin/x86_64-linux:$PATH \
+    INFOPATH=/usr/local/texlive/2017/texmf-dist/doc/info:$INFOPATH \
+    MANPATH=/usr/local/texlive/2017/texmf-dist/doc/man:$MANPATH
 
 # Additional LaTeX packages
 RUN tlmgr update -- all && tlmgr install \
@@ -51,14 +51,18 @@ RUN tlmgr update -- all && tlmgr install \
   biblatex \
   biblatex-apa \
   biocon \
+  changes \
   collectbox \
   csquotes \
   currfile \
   framed \
   gincltex \
+  ifmtarg \
   latexmk \
   logreq \
   marginnote \
+  multirow \
+  mhchem \
   outlines \
   preprint \
   preview \
@@ -66,6 +70,8 @@ RUN tlmgr update -- all && tlmgr install \
   siunitx \
   svn-prov \
   todonotes \
+  truncate \
+  xifthen \
   xstring
 
 VOLUME ["/data"]
