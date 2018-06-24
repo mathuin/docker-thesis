@@ -39,7 +39,7 @@ COPY ./small.profile /tmp/
 RUN mkdir -p /tmp/texlive \
   && curl -SL http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz \
   | tar -xzC /tmp/texlive \
-  && /tmp/texlive/install-tl-*/install-tl --profile /dev/null \
+  && /tmp/texlive/install-tl-*/install-tl --profile /tmp/small.profile \
   && rm -rf /tmp/texlive
 ENV PATH=/usr/local/texlive/2018/bin/x86_64-linux:$PATH \
     INFOPATH=/usr/local/texlive/2018/texmf-dist/doc/info:$INFOPATH \
@@ -52,6 +52,7 @@ RUN tlmgr update -- all && tlmgr install \
   biblatex \
   biblatex-apa \
   biocon \
+  chemgreek \
   collectbox \
   csquotes \
   currfile \
@@ -60,13 +61,13 @@ RUN tlmgr update -- all && tlmgr install \
   latexmk \
   logreq \
   marginnote \
-  outlines \
+  mhchem \
+  multirow \
   preprint \
   preview \
   standalone \
   siunitx \
   svn-prov \
-  todonotes \
   xstring
 
 VOLUME ["/data"]
