@@ -68,6 +68,7 @@ RUN tlmgr update -- all && tlmgr install \
   standalone \
   siunitx \
   svn-prov \
+  threeparttable \
   xstring
 
 VOLUME ["/data"]
