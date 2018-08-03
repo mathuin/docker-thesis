@@ -47,6 +47,7 @@ ENV PATH=/usr/local/texlive/2018/bin/x86_64-linux:$PATH \
 
 # Additional LaTeX packages
 RUN tlmgr update -- all && tlmgr install \
+  acro \
   adjustbox \
   biber \
   biblatex \
@@ -68,6 +69,7 @@ RUN tlmgr update -- all && tlmgr install \
   standalone \
   siunitx \
   svn-prov \
+  translations \
   threeparttable \
   xstring
 
