@@ -64,6 +64,7 @@ RUN tlmgr update -- all && tlmgr install \
   marginnote \
   mhchem \
   multirow \
+  placeins \
   preprint \
   preview \
   standalone \
